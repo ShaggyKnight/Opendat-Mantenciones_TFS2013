@@ -1,24 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <cat:CATEGORIES xmlns:cat="http://schemas.microsoft.com/VisualStudio/2008/workitemtracking/categories">
   <!-- Usage: for resilience in Test system. Even if WITs have different name, they can be referred to by the category -->
-  <CATEGORY name="Categoría de error" refname="Microsoft.BugCategory">
-    <DEFAULTWORKITEMTYPE name="Error" />
+  
+  <!--************************* Categorías Opendat ***************************-->
+  <CATEGORY name="Categoría del Cliente" refname="Opendat.ClientCategory">
+    <DEFAULTWORKITEMTYPE name="Cliente" />
+  </CATEGORY>
+  <CATEGORY name="Categoría de Publicación" refname="Opendat.PublicacionCategory">
+    <DEFAULTWORKITEMTYPE name="Publicación" />
+  </CATEGORY>
+  <CATEGORY name="Categoría de la Solicitud de soporte" refname="Opendat.SuportRequestCategory">
+    <DEFAULTWORKITEMTYPE name="Solicitud de soporte" />
+  </CATEGORY>
+  <CATEGORY name="Categoría de la Solicitud de servicio" refname="Opendat.ServiceRequestCategory">
+    <DEFAULTWORKITEMTYPE name="Solicitud de soporte" />
+  </CATEGORY>
+  <CATEGORY name="Categoría de la Preventa" refname="Opendat.PreventaCategory">
+    <DEFAULTWORKITEMTYPE name="Preventa" />
+  </CATEGORY>
+  <!--************************* Categorías Opendat ***************************-->
+
+  <!--************************* Categorías Modificadas para Opendat ***************************-->
+  <CATEGORY name="Categoría de requisito" refname="Microsoft.RequirementCategory">
+    <DEFAULTWORKITEMTYPE name="Requisito" />
+    <WORKITEMTYPE name="Solicitud de soporte"/>
+    <WORKITEMTYPE name="Solicitud de servicio"/>
+    <WORKITEMTYPE name="Preventa"/>
+  </CATEGORY>
+  <CATEGORY name="Categoría de tarea" refname="Microsoft.TaskCategory">
+    <DEFAULTWORKITEMTYPE name="Tarea" />
+    <WORKITEMTYPE name="Error" />
+    <WORKITEMTYPE name="Problema" />
   </CATEGORY>
   <!--
   <CATEGORY name="Categoría de característica" refname="Microsoft.FeatureCategory">
     <DEFAULTWORKITEMTYPE name="Característica" />
   </CATEGORY>
     -->
-  <!--Insercion de nueva categoría de la publicacíon-->
-  <CATEGORY name="Categoría de Publicación" refname="Opendat.PublicacionCategory">
-    <DEFAULTWORKITEMTYPE name="Publicación" />
-  </CATEGORY>
-  <!--Inserción nueva categoría de Cliente -->
-  <CATEGORY name="Categoría del Cliente" refname="Opendat.ClienteCategory">
-    <DEFAULTWORKITEMTYPE name="Cliente" />
-  </CATEGORY>
-  <CATEGORY name="Categoría de requisito" refname="Microsoft.RequirementCategory">
-    <DEFAULTWORKITEMTYPE name="Requisito" />
+  
+  <!--************************* Categorías Modificadas para Opendat ***************************-->
+  
+  <CATEGORY name="Categoría de error" refname="Microsoft.BugCategory">
+    <DEFAULTWORKITEMTYPE name="Error" />
   </CATEGORY>
   <CATEGORY name="Categoría de caso de prueba" refname="Microsoft.TestCaseCategory">
     <DEFAULTWORKITEMTYPE name="Caso de prueba" />
@@ -46,9 +69,6 @@
   </CATEGORY>
   <CATEGORY name="Categoría de conjunto de pruebas" refname="Microsoft.TestSuiteCategory">
     <DEFAULTWORKITEMTYPE name="Conjunto de pruebas" />
-  </CATEGORY>
-  <CATEGORY name="Categoría de tarea" refname="Microsoft.TaskCategory">
-    <DEFAULTWORKITEMTYPE name="Tarea" />
   </CATEGORY>
   <CATEGORY name="Categoría Tipos ocultos" refname="Microsoft.HiddenCategory">
     <DEFAULTWORKITEMTYPE name="Solicitud de revisión de código" />
