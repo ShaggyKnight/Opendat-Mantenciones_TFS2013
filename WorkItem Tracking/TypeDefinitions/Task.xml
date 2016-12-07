@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Witd:WITD application="Work item type editor" version="1.0" xmlns:Witd="http://schemas.microsoft.com/VisualStudio/2008/workitemtracking/typedef">
   <WORKITEMTYPE name="Tarea">
     <DESCRIPTION>Incluye información para realizar un seguimiento de la tarea durante el ciclo de vida de MSF for CMMI Process Improvement.</DESCRIPTION>
@@ -109,16 +109,33 @@
       <FIELD name="Disciplina" refname="Microsoft.VSTS.Common.Discipline" type="String" reportable="dimension">
         <ALLOWEDVALUES expanditems="true">
           <LISTITEM value="Inicialización" />
+          <LISTITEM value="Planificación y Seguimiento" />
           <LISTITEM value="Análisis y Desarrollo" />
           <LISTITEM value="Revisión de Par" />
           <LISTITEM value="Testing y Publicación" />
-
-        <!--
+          <LISTITEM value="Servicio relacionado al producto" />
+          <LISTITEM value="Servicios" />
+          <LISTITEM value="Soporte" />
+          <LISTITEM value="Revisión de Calidad" />
+          <LISTITEM value="Revisión" />
+          <LISTITEM value="Apoyo administrativo" />
+          <!--
           <LISTITEM value="Experiencia del usuario" />
           <LISTITEM value="Datos académicos del usuario" />
         -->
         </ALLOWEDVALUES>
         <HELPTEXT>Disciplina a la que pertenece la tarea</HELPTEXT>
+      </FIELD>
+      <FIELD name="Evaluación QA" refname="Open.VSTS.Common.Triage" type="String" reportable="dimension">
+        <REQUIRED />
+        <ALLOWEDVALUES expanditems="true">
+          <LISTITEM value="Pendiente" />
+          <LISTITEM value="Aprobada" />
+          <LISTITEM value="No conforme" />
+          <LISTITEM value="No aplica" />
+        </ALLOWEDVALUES>
+        <DEFAULT from="value" value="Pendiente" />
+        <HELPTEXT>Situación de la evaluación de QA.</HELPTEXT>
       </FIELD>
       <!-- **************** Build Integration Fields *******************************************  -->
       <FIELD name="Integración de compilación" refname="Microsoft.VSTS.Build.IntegrationBuild" type="String" reportable="dimension">
@@ -128,6 +145,7 @@
         <HELPTEXT>Compilación en la que se completó la tarea</HELPTEXT>
       </FIELD>
       <!-- *************** MSF for CMMI PI Fields ****************   -->
+      <FIELD name="HTML de evaluación del impacto" refname="Microsoft.VSTS.CMMI.ImpactAssessmentHtml" type="HTML"/>
       <FIELD name="Tipo de tarea" refname="Microsoft.VSTS.CMMI.TaskType" type="String" reportable="dimension">
         <ALLOWEDVALUES expanditems="true">
           <LISTITEM value="Acción correctiva" />
@@ -158,7 +176,6 @@
         </ALLOWEDVALUES>
         <DEFAULT from="value" value="No" />
       </FIELD>
-        
       <!-- **************** Scheduling Fields *************************************************  -->
       <FIELD name="Estimación original" refname="Microsoft.VSTS.Scheduling.OriginalEstimate" type="Double" reportable="measure">
         <HELPTEXT>Estimación inicial del trabajo necesario para completar la tarea (en horas/persona)</HELPTEXT>
@@ -235,6 +252,18 @@
             <FIELD refname="Microsoft.VSTS.Common.ClosedDate">
               <REQUIRED />
             </FIELD>
+            <FIELD refname="Microsoft.VSTS.Common.ResolvedReason">
+              <COPY from="field" field="System.Reason"/>
+            </FIELD>
+            <FIELD refname="Microsoft.VSTS.Common.ResolvedDate">
+              <COPY from="clock" value="Microsoft.VSTS.Common.ClosedDate"/>
+            </FIELD>
+            <FIELD refname="Microsoft.VSTS.Common.ResolvedBy">
+              <COPY from="field" field="Microsoft.VSTS.Common.ClosedBy"/>
+            </FIELD>  
+            <FIELD refname="System.AssignedTo">
+              <REQUIRED/>
+            </FIELD>
           </FIELDS>
         </STATE>
       </STATES>
@@ -276,8 +305,14 @@
           </REASONS>
         </TRANSITION>
         <TRANSITION from="Activo" to="Cerrado">
+          <!--
+          <ACTIONS>
+            <ACTION value="Microsoft.VSTS.Actions.Checkin"/>
+          </ACTIONS>
+          -->
           <REASONS>
             <REASON value="Superada por eventos" />
+            <REASON value="No aplica" />
             <DEFAULTREASON value="Terminada" />
           </REASONS>
           <FIELDS>
@@ -348,6 +383,7 @@
                 <Control Type="FieldControl" FieldName="System.AssignedTo" Label="Asi&amp;gnado a" LabelPosition="Left" />
                 <Control Type="FieldControl" FieldName="System.State" Label="&amp;Estado" LabelPosition="Left" />
                 <Control Type="FieldControl" FieldName="System.Reason" Label="Motivo" LabelPosition="Left" />
+                <Control Type="FieldControl" FieldName="Open.VSTS.Common.Triage" Label="Revisión QA" LabelPosition="Left" />
               </Column>
             </Group>
           </Column>
@@ -359,14 +395,9 @@
                   <Control Type="FieldControl" FieldName="Microsoft.VSTS.Common.Triage" Label="Evaluación de errores" LabelPosition="Left" />
                   -->
                 <Control Type="FieldControl" FieldName="Microsoft.VSTS.CMMI.Blocked" Label="Bloqueado" LabelPosition="Left" />
-                  
                 <!--Agregada fecha prevista de inicio y finalizacion de tarea-->
-                <Control Type="DateTimeControl" FieldName="Microsoft.VSTS.Scheduling.StartDate" Label="Fecha Prevista Inicio" LabelPosition="Left"
-                Format="Custom"
-                CustomFormat="dd/mm/yyyy" />   
-                <Control Type="DateTimeControl" FieldName="Microsoft.VSTS.Scheduling.FinishDate" Label="Fecha Prevista Finalización" LabelPosition="Left"
-                Format="Custom"
-                CustomFormat="dd/mm/yyyy"/>
+                <Control Type="DateTimeControl" FieldName="Microsoft.VSTS.Scheduling.StartDate" Label="Fecha Prevista Inicio" LabelPosition="Left" Format="Custom" CustomFormat="dd/mm/yyyy" />
+                <Control Type="DateTimeControl" FieldName="Microsoft.VSTS.Scheduling.FinishDate" Label="Fecha Prevista Finalización" LabelPosition="Left" Format="Custom" CustomFormat="dd/mm/yyyy" />
               </Column>
             </Group>
           </Column>
@@ -396,6 +427,9 @@
               <Tab Label="Descripción">
                 <Control Type="HtmlFieldControl" FieldName="System.Description" Dock="Fill" LabelPosition="Top" />
               </Tab>
+              <Tab Label="Análisis">
+                <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.ImpactAssessmentHtml" Dock="Fill"/>
+              </Tab>
               <Tab Label="Implementación">
                 <Control Type="LinksControl" Name="Hierarchy" LabelPosition="Top">
                   <LinksControlOptions>
@@ -404,7 +438,10 @@
                     </WorkItemLinkFilters>
                     <WorkItemTypeFilters FilterType="include">
                       <Filter WorkItemType="Requisito" />
-                      <Filter WorkItemType="Tarea" />
+                      <Filter WorkItemType="Preventa" />
+                      <Filter WorkItemType="Solicitud de soporte" />
+                      <Filter WorkItemType="Solicitud de servicio" />
+                      <Filter WorkItemType="Publicación" />
                     </WorkItemTypeFilters>
                     <ExternalLinkFilters FilterType="excludeAll" />
                     <LinkColumns>
@@ -450,6 +487,7 @@
                 </Group>
               </Tab>
                 -->
+              
             </TabGroup>
           </Column>
           <Column PercentWidth="50">

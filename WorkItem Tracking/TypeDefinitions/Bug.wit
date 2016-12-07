@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<workItemType xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="12.0.0.0" Name="Error" source="bug.xml" xmlns="http://schemas.microsoft.com/dsltools/WITDesigner">
+  <States>
+    <state Name="Pendiente">
+      <Source>
+        <transitionMoniker Name="/Error/Pendiente~Activo" />
+        <transitionMoniker Name="/Error/Pendiente~Cerrado" />
+      </Source>
+      <fields>
+        <stateFieldConstraint Id="64a7be5e-62ce-49dc-a9a3-0b1eed86b607" ruleTag="- ">
+          <fieldMoniker Name="/Error/Fecha de resolución" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="d572868f-34fb-4d53-8ec5-5095faf71f46" ruleTag="- ">
+          <fieldMoniker Name="/Error/Resuelto por" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="aeb952cf-4d82-4a95-806f-b5a66cee74de" ruleTag="- ">
+          <fieldMoniker Name="/Error/Motivo de resolución" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="bfa943be-2db5-492b-b501-e765ed7103a1" ruleTag="- ">
+          <fieldMoniker Name="/Error/Fecha de cierre" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="529b3cf2-8e29-4b43-8b60-1c2317b7440b" ruleTag="- ">
+          <fieldMoniker Name="/Error/Cerrado por" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="a4a58d03-aa7d-48c9-aa33-d2de9a73fcc6" ruleTag="- ">
+          <fieldMoniker Name="/Error/Fecha de activación" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="9abf5558-1016-4253-9a10-235d54c2c7d8" ruleTag="- ">
+          <fieldMoniker Name="/Error/Activado por" />
+        </stateFieldConstraint>
+      </fields>
+    </state>
+    <state Name="Activo">
+      <Source>
+        <transitionMoniker Name="/Error/Activo~Pendiente" />
+        <transitionMoniker Name="/Error/Activo~Cerrado" />
+      </Source>
+      <fields>
+        <stateFieldConstraint Id="81b7e8d5-ce1c-4efe-a4fa-e1c74b936018" ruleTag="- ">
+          <fieldMoniker Name="/Error/Fecha de resolución" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="4370d946-7ad0-4b52-9e88-74fd18e92a9e" ruleTag="- ">
+          <fieldMoniker Name="/Error/Resuelto por" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="cdeed62d-db8d-4cac-84eb-9cd975b8bebf" ruleTag="- ">
+          <fieldMoniker Name="/Error/Motivo de resolución" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="1ce18493-353b-4456-8096-1412cccd60b7" ruleTag="- ">
+          <fieldMoniker Name="/Error/Fecha de cierre" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="2975b5c0-e258-4d30-851b-51fe9ccc3da6" ruleTag="- ">
+          <fieldMoniker Name="/Error/Cerrado por" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="f787a9c2-fc7e-4558-81c1-3d8660f3d5c7" ruleTag="+ ">
+          <fieldMoniker Name="/Error/Fecha de activación" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="ac90e72f-a0cc-4dbd-8513-d7d1fa2bc904" ruleTag="+ ">
+          <fieldMoniker Name="/Error/Activado por" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="6976f7ec-ef96-4a1e-bbb6-2def30319ace" ruleTag="+ ">
+          <fieldMoniker Name="/Error/Asignado a" />
+        </stateFieldConstraint>
+      </fields>
+    </state>
+    <state Name="Cerrado">
+      <Source>
+        <transitionMoniker Name="/Error/Cerrado~Activo" />
+        <transitionMoniker Name="/Error/Cerrado~Pendiente" />
+      </Source>
+      <fields>
+        <stateFieldConstraint Id="62d08f90-7578-48b6-8852-7dbd307cbe57" ruleTag="+ ">
+          <fieldMoniker Name="/Error/Cerrado por" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="fbb52dcf-3ddb-48b8-89d9-3f81d2d9adf8" ruleTag="+ ">
+          <fieldMoniker Name="/Error/Fecha de cierre" />
+        </stateFieldConstraint>
+        <stateFieldConstraint Id="c6ddc1e7-a9de-49a4-a8a8-550441d2fb4a" ruleTag="* ">
+          <fieldMoniker Name="/Error/Motivo de resolución" />
+        </stateFieldConstraint>
+      </fields>
+    </state>
+  </States>
+  <Fields>
+    <field Name="Asignado a" referenceName="System.AssignedTo" />
+    <field Name="Fecha de activación" referenceName="Microsoft.VSTS.Common.ActivatedDate" />
+    <field Name="Activado por" referenceName="Microsoft.VSTS.Common.ActivatedBy" />
+    <field Name="Fecha de resolución" referenceName="Microsoft.VSTS.Common.ResolvedDate" />
+    <field Name="Cerrado por" referenceName="Microsoft.VSTS.Common.ClosedBy" />
+    <field Name="Fecha de cierre" referenceName="Microsoft.VSTS.Common.ClosedDate" />
+    <field Name="Resuelto por" referenceName="Microsoft.VSTS.Common.ResolvedBy" />
+    <field Name="Motivo de resolución" referenceName="Microsoft.VSTS.Common.ResolvedReason" />
+  </Fields>
+  <Transitions>
+    <transition Id="a277ebdd-aa14-468d-8a8f-fca17c620b8e" Name="~Pendiente">
+      <Target>
+        <stateMoniker Name="/Error/Pendiente" />
+      </Target>
+      <Reasons>
+        <reason Name="Error de compilación" />
+        <reason Name="Nuevo" />
+      </Reasons>
+      <fields>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Asignado a" />
+        </transitionFieldConstraint>
+      </fields>
+    </transition>
+    <transition Id="df94c72a-1b9d-44ef-a943-eabdcd88936d" Name="Pendiente~Activo">
+      <Target>
+        <stateMoniker Name="/Error/Activo" />
+      </Target>
+      <Reasons>
+        <reason Name="Evaluar" />
+        <reason Name="Aprobado" />
+      </Reasons>
+      <actions>
+        <action Name="Microsoft.VSTS.Actions.StartWork" />
+      </actions>
+      <fields>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Fecha de activación" />
+        </transitionFieldConstraint>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Activado por" />
+        </transitionFieldConstraint>
+      </fields>
+    </transition>
+    <transition Id="1035a5f7-b1f1-486f-ace1-f4383bcbf7e0" Name="Activo~Pendiente">
+      <Target>
+        <stateMoniker Name="/Error/Pendiente" />
+      </Target>
+      <Reasons>
+        <reason Name="Evaluación completada" />
+        <reason Name="Pospuesto" />
+      </Reasons>
+      <actions>
+        <action Name="Microsoft.VSTS.Actions.StopWork" />
+      </actions>
+    </transition>
+    <transition Id="c15ed2d8-9b9f-441d-a19e-a9129da0a31a" Name="Activo~Cerrado">
+      <Target>
+        <stateMoniker Name="/Error/Cerrado" />
+      </Target>
+      <Reasons>
+        <reason Name="No se puede reproducir" />
+        <reason Name="Duplicado" />
+        <reason Name="Obsoleto" />
+        <reason Name="Corregido" />
+      </Reasons>
+      <actions>
+        <action Name="Microsoft.VSTS.Actions.Checkin" />
+      </actions>
+      <fields>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Fecha de resolución" />
+        </transitionFieldConstraint>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Cerrado por" />
+        </transitionFieldConstraint>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Fecha de cierre" />
+        </transitionFieldConstraint>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Resuelto por" />
+        </transitionFieldConstraint>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Motivo de resolución" />
+        </transitionFieldConstraint>
+      </fields>
+    </transition>
+    <transition Id="93211566-86f4-4f08-80f5-1e2094e8c58a" Name="Cerrado~Activo">
+      <Target>
+        <stateMoniker Name="/Error/Activo" />
+      </Target>
+      <Reasons>
+        <reason Name="Regresión" />
+        <reason Name="Sin corregir" />
+        <reason Name="Cerrado por error" />
+      </Reasons>
+      <fields>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Activado por" />
+        </transitionFieldConstraint>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Fecha de activación" />
+        </transitionFieldConstraint>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Asignado a" />
+        </transitionFieldConstraint>
+      </fields>
+    </transition>
+    <transition Id="fbc4e60d-48e7-4d8a-af25-45a6d843a20f" Name="Pendiente~Cerrado">
+      <Target>
+        <stateMoniker Name="/Error/Cerrado" />
+      </Target>
+      <Reasons>
+        <reason Name="Rechazado" />
+        <reason Name="No aplica" />
+      </Reasons>
+      <fields>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Fecha de cierre" />
+        </transitionFieldConstraint>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Cerrado por" />
+        </transitionFieldConstraint>
+      </fields>
+    </transition>
+    <transition Id="c285322e-9768-4360-b134-a4f5e3d01100" Name="Cerrado~Pendiente">
+      <Target>
+        <stateMoniker Name="/Error/Pendiente" />
+      </Target>
+      <Reasons>
+        <reason Name="Re-introducido en el ámbito" />
+      </Reasons>
+      <fields>
+        <transitionFieldConstraint ruleTag="* ">
+          <fieldMoniker Name="/Error/Asignado a" />
+        </transitionFieldConstraint>
+      </fields>
+    </transition>
+  </Transitions>
+</workItemType>

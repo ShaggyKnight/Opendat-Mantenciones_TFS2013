@@ -127,6 +127,26 @@
       <FIELD name="Impacto en la prueba" refname="Microsoft.VSTS.CMMI.ImpactOnTest" type="HTML" />
       <FIELD name="Impacto en el desarrollo" refname="Microsoft.VSTS.CMMI.ImpactOnDevelopment" type="HTML" />
       <FIELD name="Impacto en las publicaciones técnicas" refname="Microsoft.VSTS.CMMI.ImpactOnTechnicalPublications" type="HTML" />
+      <!--********************* Campos Opendat ************************ -->
+      <FIELD name="Confirmado" refname="Microsoft.VSTS.CMMI.Committed" type="String">
+        <REQUIRED />
+        <ALLOWEDVALUES expanditems="true">
+          <LISTITEM value="Sí" />
+          <LISTITEM value="No" />
+        </ALLOWEDVALUES>
+        <DEFAULT from="value" value="No" />
+        <HELPTEXT>¿Se ha confirmado la solicitud?</HELPTEXT>
+      </FIELD>
+      <FIELD name="Evaluación QA" refname="Open.VSTS.Common.Triage" type="String" reportable="dimension">
+        <REQUIRED />
+        <ALLOWEDVALUES expanditems="true">
+          <LISTITEM value="Pendiente" />
+          <LISTITEM value="Evaluado" />
+          <LISTITEM value="No aplica" />
+        </ALLOWEDVALUES>
+        <DEFAULT from="value" value="Pendiente" />
+        <HELPTEXT>Situación de la evaluación de QA asociada.</HELPTEXT>
+      </FIELD>
     </FIELDS>
     <WORKFLOW>
       <STATES>
@@ -226,8 +246,7 @@
         </TRANSITION>
         <TRANSITION from="Propuesta" to="Activo">
           <REASONS>
-            <REASON value="Investigar" />
-            <DEFAULTREASON value="Aceptado" />
+            <DEFAULTREASON value="Investigar" />
           </REASONS>
           <FIELDS>
             <FIELD refname="Microsoft.VSTS.Common.ActivatedDate">
@@ -241,12 +260,13 @@
         </TRANSITION>
         <TRANSITION from="Activo" to="Propuesta">
           <REASONS>
-            <DEFAULTREASON value="Investigación completada" />
+            <REASON value="Investigación completada" />
+            <DEFAULTREASON value="Pospuesta" />
           </REASONS>
         </TRANSITION>
         <TRANSITION from="Activo" to="Resuelto">
           <REASONS>
-            <DEFAULTREASON value="Todo el código y sistema probados" />
+            <DEFAULTREASON value="Cambio aprobado" />
           </REASONS>
           <FIELDS>
             <FIELD refname="Microsoft.VSTS.Common.ResolvedDate">
@@ -264,7 +284,7 @@
         <TRANSITION from="Activo" to="Cerrado">
           <REASONS>
             <REASON value="Fuera de ámbito" />
-            <DEFAULTREASON value="Abandonado" />
+            <DEFAULTREASON value="Rechazado" />
           </REASONS>
           <FIELDS>
             <FIELD refname="Microsoft.VSTS.Common.ClosedDate">
@@ -278,7 +298,7 @@
         </TRANSITION>
         <TRANSITION from="Resuelto" to="Activo">
           <REASONS>
-            <DEFAULTREASON value="Prueba de validación no superada" />
+            <DEFAULTREASON value="Revisar y análizar" />
           </REASONS>
           <FIELDS>
             <FIELD refname="Microsoft.VSTS.Common.ActivatedBy">
@@ -292,7 +312,7 @@
         </TRANSITION>
         <TRANSITION from="Resuelto" to="Cerrado">
           <REASONS>
-            <DEFAULTREASON value="Prueba de validación superada" />
+            <DEFAULTREASON value="Cambios aplicados y solucionado" />
           </REASONS>
           <FIELDS>
             <FIELD refname="Microsoft.VSTS.Common.ClosedDate">
@@ -306,7 +326,8 @@
         </TRANSITION>
         <TRANSITION from="Propuesta" to="Cerrado">
           <REASONS>
-            <DEFAULTREASON value="Rechazado" />
+            <REASON value="Fuera de ámbito" />
+            <DEFAULTREASON value="Abandonada" />
           </REASONS>
           <FIELDS>
             <FIELD refname="Microsoft.VSTS.Common.ClosedDate">
@@ -320,7 +341,7 @@
         </TRANSITION>
         <TRANSITION from="Cerrado" to="Activo">
           <REASONS>
-            <DEFAULTREASON value="Cerrado por error" />
+            <DEFAULTREASON value="Revisar y análizar" />
           </REASONS>
           <FIELDS>
             <FIELD refname="Microsoft.VSTS.Common.ActivatedBy">
@@ -334,6 +355,28 @@
               <COPY from="field" field="Microsoft.VSTS.Common.ClosedBy" />
             </FIELD>
           </FIELDS>
+        </TRANSITION>
+        <TRANSITION from="Cerrado" to="Resuelto">
+          <ACTIONS>
+            <ACTION value="Microsoft.VSTS.Actions.Checkin" />
+          </ACTIONS>
+          <REASONS>
+            <DEFAULTREASON value="Cerrado por error" />
+          </REASONS>
+          <FIELDS>
+            <FIELD refname="Microsoft.VSTS.Common.ResolvedDate">
+              <SERVERDEFAULT from="clock" />
+            </FIELD>
+            <FIELD refname="Microsoft.VSTS.Common.ResolvedBy">
+              <COPY from="currentuser" />
+              <VALIDUSER />
+            </FIELD>
+          </FIELDS>
+        </TRANSITION>
+        <TRANSITION from="Cerrado" to="Propuesta">
+          <REASONS>
+            <DEFAULTREASON value="Re-introducido en el ambito" />
+          </REASONS>
         </TRANSITION>
       </TRANSITIONS>
     </WORKFLOW>
@@ -358,7 +401,8 @@
             <Group Label="Planeación">
               <Column PercentWidth="100">
                 <Control Type="FieldControl" FieldName="Microsoft.VSTS.Common.Priority" Label="Prioridad" LabelPosition="Left" />
-                <Control Type="FieldControl" FieldName="Microsoft.VSTS.Common.Triage" Label="Evaluación de errores" LabelPosition="Left" />
+                <Control Type="FieldControl" FieldName="Open.VSTS.Common.Triage" Label="Revisión QA" LabelPosition="Left" />
+                <Control Type="FieldControl" FieldName="Microsoft.VSTS.CMMI.Committed" Label="¿Confirmada?" LabelPosition="Left" />
                 <Control Type="FieldControl" FieldName="Microsoft.VSTS.CMMI.Blocked" Label="Bloqueado" LabelPosition="Left" />
               </Column>
             </Group>
@@ -378,15 +422,16 @@
               <Tab Label="Descripción">
                 <Control Type="HtmlFieldControl" FieldName="System.Description" Dock="Fill" LabelPosition="Top" />
               </Tab>
-              <Tab Label="Justificación">
-                <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.Justification" Dock="Fill" LabelPosition="Top" />
-              </Tab>
               <Tab Label="Análisis">
+                <!-- El impacto en las publicaciones tecnicas se tomará como el impacto economico que podria existir al realizar -->
+                <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.ImpactOnTechnicalPublications" Label="Impacto Economico" LabelPosition="Top" Dock="Fill" />
+                <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.ImpactOnDevelopment" Label="Impacto en el desarrollo" LabelPosition="Top" Dock="Fill" />
+                <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.ImpactOnTest" Label="Impacto en las pruebas" LabelPosition="Top" Dock="Fill" />
                 <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.ImpactOnArchitecture" Label="Impacto en la arquitectura" LabelPosition="Top" Dock="Fill" />
                 <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.ImpactOnUserExperience" Label="Impacto en la experiencia del usuario" LabelPosition="Top" Dock="Fill" />
-                <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.ImpactOnTest" Label="Impacto en la prueba" LabelPosition="Top" Dock="Fill" />
-                <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.ImpactOnDevelopment" Label="Impacto en el diseño o desarrollo" LabelPosition="Top" Dock="Fill" />
-                <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.ImpactOnTechnicalPublications" Label="Impacto en las publicaciones técnicas" LabelPosition="Top" Dock="Fill" />
+              </Tab>
+              <Tab Label="Justificación">
+                <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.Justification" Dock="Fill" LabelPosition="Top" />
               </Tab>
               <Tab Label="Requisitos">
                 <Control Type="LinksControl" Name="Requirements" LabelPosition="Top">

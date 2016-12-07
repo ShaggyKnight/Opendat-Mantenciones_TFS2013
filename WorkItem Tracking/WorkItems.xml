@@ -16,19 +16,23 @@
     </dependencies>
     <taskXml>
       <WORKITEMTYPES>
+       <!--****************** Elementos Opendat ********************-->
+        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Cliente.xml" />
+        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\SuportRequest.xml" />
+        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Publicación.xml" />
+        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\ServiceRequest.xml" />
+        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Requirement.xml" />
+        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Task.xml" />
+        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Preventa.xml" />
+        <!--***************** Elementos Opendat ********************-->
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Bug.xml" />
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\CodeReviewRequest.xml" />
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\CodeReviewResponse.xml" />
-        <!-- <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Feature.xml" /> -->
-        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Cliente.xml" />
-        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Publicación.xml" />
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\FeedbackRequest.xml" />
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\FeedbackResponse.xml" />
-        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Task.xml" />
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Issue.xml" />
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\ChangeRequest.xml" />
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Risk.xml" />
-        <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Requirement.xml" />
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\Review.xml" />
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\TestCase.xml" />
         <WORKITEMTYPE fileName="WorkItem Tracking\TypeDefinitions\TestPlan.xml" />
@@ -104,93 +108,6 @@
       <PROCESSCONFIGURATION>
         <ProjectConfiguration fileName="WorkItem Tracking\Process\ProcessConfiguration.xml" />
       </PROCESSCONFIGURATION>
-    </taskXml>
-  </task>
-  <task id="WIs" name="WorkItems" plugin="Microsoft.ProjectCreationWizard.WorkItemTracking" completionMessage="WorkItems uploaded">
-    <dependencies>
-      <dependency taskId="WITs" />
-    </dependencies>
-    <taskXml>
-      <WORKITEMS>
-        <WI type="Tarea">
-          <FIELD refname="System.Title" value="Analisis de impacto" />
-          <FIELD refname="System.AreaPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.IterationPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.State" value="Pendiente" />
-          <FIELD refname="System.Reason" value="nuevo" />
-          <FIELD refname="System.Description" value="Se ha de realizar un analisis de impacto del cambio de alcance, sobre el producto o sus caracteristicas y se ha de reflejar en la pestaña de impacto." />
-          <FIELD refname="Microsoft.VSTS.Common.Severity" value="3 - Medio" />
-          <FIELD refname="Microsoft.VSTS.Common.Discipline" value="Análisis" />
-          <FIELD refname="Microsoft.VSTS.CMMI.TaskType" value="Planeado" />
-          <FIELD refname="Microsoft.VSTS.CMMI.Blocked" value="No" />
-        </WI>
-        <WI type="Tarea">
-          <FIELD refname="System.Title" value="Validación de requerimientos" />
-          <FIELD refname="System.AreaPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.IterationPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.State" value="Pendiente" />
-          <FIELD refname="System.Description" value="Se han de validar las actividades a realizarse en el cambio de alcance, y asegurarse que se han comprendido a cabalidad" />
-          <FIELD refname="Microsoft.VSTS.Common.Severity" value="3 - Medio" />
-          <FIELD refname="Microsoft.VSTS.Common.Discipline" value="Análisis" />
-          <FIELD refname="Microsoft.VSTS.CMMI.TaskType" value="Acción correctiva" />
-          <FIELD refname="Microsoft.VSTS.CMMI.Blocked" value="No" />
-        </WI>
-        <WI type="Tarea">
-          <FIELD refname="System.Title" value="Solicitud de Objetos" />
-          <FIELD refname="System.AreaPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.IterationPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.State" value="Pendiente" />
-          <FIELD refname="System.Description" value="Solicitar los Objetos necesarios para el desarrollo del cambio de alcance al CM" />
-          <FIELD refname="Microsoft.VSTS.Common.Severity" value="3 - Medio" />
-          <FIELD refname="Microsoft.VSTS.Common.Discipline" value="Desarrollo" />
-          <FIELD refname="Microsoft.VSTS.CMMI.TaskType" value="Planeado" />
-          <FIELD refname="Microsoft.VSTS.CMMI.Blocked" value="No" />
-        </WI>
-        <WI type="Tarea">
-          <FIELD refname="System.Title" value="Contruccion" />
-          <FIELD refname="System.AreaPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.IterationPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.State" value="Pendiente" />
-          <FIELD refname="System.Description" value="Desarrollar el cambio de alcance" />
-          <FIELD refname="Microsoft.VSTS.Common.Severity" value="3 - Medio" />
-          <FIELD refname="Microsoft.VSTS.Common.Discipline" value="Desarrollo" />
-          <FIELD refname="Microsoft.VSTS.CMMI.TaskType" value="Planeado" />
-          <FIELD refname="Microsoft.VSTS.CMMI.Blocked" value="No" />
-        </WI>
-        <WI type="Tarea">
-          <FIELD refname="System.Title" value="Documentación" />
-          <FIELD refname="System.AreaPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.IterationPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.State" value="Pendiente" />
-          <FIELD refname="System.Description" value="Construir los manuales&#xD;&#xA;  - AS Built&#xD;&#xA;  - Instalación&#xD;&#xA;  - Usuario&#xD;&#xA;  - Operación" />
-          <FIELD refname="Microsoft.VSTS.Common.Severity" value="2 - Alto" />
-          <FIELD refname="Microsoft.VSTS.Common.Discipline" value="Desarrollo" />
-          <FIELD refname="Microsoft.VSTS.CMMI.TaskType" value="Planeado" />
-          <FIELD refname="Microsoft.VSTS.CMMI.Blocked" value="No" />
-        </WI>
-        <WI type="Tarea">
-          <FIELD refname="System.Title" value="Revisión" />
-          <FIELD refname="System.AreaPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.IterationPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.State" value="Pendiente" />
-          <FIELD refname="System.Description" value="Revision de los documentos generados, y de los elementos de TFS" />
-          <FIELD refname="Microsoft.VSTS.Common.Severity" value="3 - Medio" />
-          <FIELD refname="Microsoft.VSTS.Common.Discipline" value="Prueba" />
-          <FIELD refname="Microsoft.VSTS.CMMI.TaskType" value="Acción correctiva" />
-          <FIELD refname="Microsoft.VSTS.CMMI.Blocked" value="No" />
-        </WI>
-        <WI type="Tarea">
-          <FIELD refname="System.Title" value="Testing" />
-          <FIELD refname="System.AreaPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.IterationPath" value="$$PROJECTNAME$$" />
-          <FIELD refname="System.State" value="Pendiente" />
-          <FIELD refname="System.Description" value="Pruebas funcionales." />
-          <FIELD refname="Microsoft.VSTS.Common.Severity" value="2 - Alto" />
-          <FIELD refname="Microsoft.VSTS.Common.Discipline" value="Prueba" />
-          <FIELD refname="Microsoft.VSTS.CMMI.TaskType" value="Planeado" />
-          <FIELD refname="Microsoft.VSTS.CMMI.Blocked" value="No" />
-        </WI>
-      </WORKITEMS>
     </taskXml>
   </task>
 </tasks>

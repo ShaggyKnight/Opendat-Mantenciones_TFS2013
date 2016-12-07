@@ -106,8 +106,6 @@
         <REQUIRED />
         <ALLOWEDVALUES expanditems="true">
           <LISTITEM value="Pendiente" />
-          <LISTITEM value="Más información" />
-          <LISTITEM value="Información recibida" />
           <LISTITEM value="Evaluado" />
         </ALLOWEDVALUES>
         <DEFAULT from="value" value="Pendiente" />
@@ -124,7 +122,7 @@
         <DEFAULT from="value" value="3 - Medio" />
         <HELPTEXT>Evaluación del impacto del error en el proyecto</HELPTEXT>
       </FIELD>
-      <FIELD name="Rango en la pila" refname="Microsoft.VSTS.Common.StackRank" type="Double" reportable="dimension">
+      <FIELD name="Rango en pila" refname="Microsoft.VSTS.Common.StackRank" type="Double" reportable="dimension">
         <HELPTEXT>Trabajar primero en los elementos que posean un menor valor de rango en la pila. Establecer en evaluación de errores.</HELPTEXT>
       </FIELD>
       <!-- **************** Test Integration Fields *************************************************  -->
@@ -175,11 +173,53 @@
         <DEFAULT from="value" value="Desconocido" />
       </FIELD>
       <FIELD name="Cómo se encontró" refname="Microsoft.VSTS.CMMI.HowFound" type="String" />
+      <!--**************************** Campos Opendat *******************************-->
+      <FIELD name="Actividad" refname="Microsoft.VSTS.Common.Activity" type="String" reportable="dimension">
+        <SUGGESTEDVALUES expanditems="true">
+          <LISTITEM value="Desarrollo" />
+          <LISTITEM value="Testing" />
+          <LISTITEM value="Cambio de Alcance" />
+          <LISTITEM value="Diseño" />
+          <LISTITEM value="Publicación" />
+          <LISTITEM value="Documentación" />
+        </SUGGESTEDVALUES>
+        <HELPTEXT>Type of work involved</HELPTEXT>
+      </FIELD>
+      <FIELD name="Trabajo restante" refname="Microsoft.VSTS.Scheduling.RemainingWork" type="Double" reportable="measure">
+        <HELPTEXT>An estimate of the number of units of work remaining to complete this task</HELPTEXT>
+      </FIELD>
+      <FIELD name="Trabajo completado" refname="Microsoft.VSTS.Scheduling.CompletedWork" type="Double" reportable="measure">
+        <HELPTEXT>The number of units of work that have been spent on this task</HELPTEXT>
+      </FIELD>
+      <FIELD name="Fecha de inicio" refname="Microsoft.VSTS.Scheduling.StartDate" type="DateTime" reportable="dimension">
+        <HELPTEXT>The date to start the task</HELPTEXT>
+      </FIELD>
+      <FIELD name="Fecha de fin" refname="Microsoft.VSTS.Scheduling.FinishDate" type="DateTime" reportable="dimension">
+        <HELPTEXT>The date to finish the task</HELPTEXT>
+      </FIELD>
+      <FIELD name="Disciplina" refname="Microsoft.VSTS.Common.Discipline" type="String" reportable="dimension">
+        <ALLOWEDVALUES expanditems="true">
+          <LISTITEM value="Inicialización" />
+          <LISTITEM value="Planificación y Seguimiento" />
+          <LISTITEM value="Análisis y Desarrollo" />
+          <LISTITEM value="Revisión de Par" />
+          <LISTITEM value="Testing y Publicación" />
+          <LISTITEM value="Servicio relacionado al producto" />
+          <LISTITEM value="Soporte" />
+          <LISTITEM value="Servicios" />
+          <LISTITEM value="Revisión de Calidad" />
+          <!--
+          <LISTITEM value="Experiencia del usuario" />
+          <LISTITEM value="Datos académicos del usuario" />
+        -->
+        </ALLOWEDVALUES>
+        <HELPTEXT>Disciplina a la que pertenece la tarea</HELPTEXT>
+      </FIELD>
     </FIELDS>
     <!-- *************** Workflow ****************   -->
     <WORKFLOW>
       <STATES>
-        <STATE value="Propuesta">
+        <STATE value="Pendiente">
           <FIELDS>
             <FIELD refname="Microsoft.VSTS.Common.ResolvedDate">
               <EMPTY />
@@ -232,28 +272,6 @@
             </FIELD>
           </FIELDS>
         </STATE>
-        <STATE value="Resuelto">
-          <FIELDS>
-            <FIELD refname="Microsoft.VSTS.Common.ClosedDate">
-              <EMPTY />
-            </FIELD>
-            <FIELD refname="Microsoft.VSTS.Common.ClosedBy">
-              <EMPTY />
-            </FIELD>
-            <FIELD refname="Microsoft.VSTS.Common.ResolvedReason">
-              <REQUIRED />
-            </FIELD>
-            <FIELD refname="Microsoft.VSTS.Common.ResolvedDate">
-              <REQUIRED />
-            </FIELD>
-            <FIELD refname="Microsoft.VSTS.Common.ResolvedBy">
-              <REQUIRED />
-            </FIELD>
-            <FIELD refname="System.AssignedTo">
-              <REQUIRED />
-            </FIELD>
-          </FIELDS>
-        </STATE>
         <STATE value="Cerrado">
           <FIELDS>
             <FIELD refname="Microsoft.VSTS.Common.ClosedBy">
@@ -269,7 +287,7 @@
         </STATE>
       </STATES>
       <TRANSITIONS>
-        <TRANSITION from="" to="Propuesta">
+        <TRANSITION from="" to="Pendiente">
           <REASONS>
             <REASON value="Error de compilación" />
             <DEFAULTREASON value="Nuevo" />
@@ -280,12 +298,12 @@
             </FIELD>
           </FIELDS>
         </TRANSITION>
-        <TRANSITION from="Propuesta" to="Activo">
+        <TRANSITION from="Pendiente" to="Activo">
           <ACTIONS>
             <ACTION value="Microsoft.VSTS.Actions.StartWork" />
           </ACTIONS>
           <REASONS>
-            <REASON value="Investigar" />
+            <REASON value="Evaluar" />
             <DEFAULTREASON value="Aprobado" />
           </REASONS>
           <FIELDS>
@@ -298,18 +316,21 @@
             </FIELD>
           </FIELDS>
         </TRANSITION>
-        <TRANSITION from="Activo" to="Propuesta">
+        <TRANSITION from="Activo" to="Pendiente">
           <ACTIONS>
             <ACTION value="Microsoft.VSTS.Actions.StopWork" />
           </ACTIONS>
           <REASONS>
-            <DEFAULTREASON value="Investigación completada" />
+            <REASON value="Evaluación completada" />
+            <DEFAULTREASON value="Pospuesto" />
           </REASONS>
         </TRANSITION>
-        <TRANSITION from="Activo" to="Resuelto">
+        <TRANSITION from="Activo" to="Cerrado">
+          <!--
           <ACTIONS>
             <ACTION value="Microsoft.VSTS.Actions.Checkin" />
           </ACTIONS>
+          -->
           <REASONS>
             <REASON value="No se puede reproducir">
               <FIELDS>
@@ -317,16 +338,6 @@
                   <COPY from="value" value="No se puede reproducir" />
                   <ALLOWEDVALUES expanditems="true">
                     <LISTITEM value="No se puede reproducir" />
-                  </ALLOWEDVALUES>
-                </FIELD>
-              </FIELDS>
-            </REASON>
-            <REASON value="Aplazado">
-              <FIELDS>
-                <FIELD refname="Microsoft.VSTS.Common.ResolvedReason">
-                  <COPY from="value" value="Aplazado" />
-                  <ALLOWEDVALUES expanditems="true">
-                    <LISTITEM value="Aplazado" />
                   </ALLOWEDVALUES>
                 </FIELD>
               </FIELDS>
@@ -341,32 +352,12 @@
                 </FIELD>
               </FIELDS>
             </REASON>
-            <REASON value="Por diseño">
-              <FIELDS>
-                <FIELD refname="Microsoft.VSTS.Common.ResolvedReason">
-                  <COPY from="value" value="Por diseño" />
-                  <ALLOWEDVALUES expanditems="true">
-                    <LISTITEM value="Por diseño" />
-                  </ALLOWEDVALUES>
-                </FIELD>
-              </FIELDS>
-            </REASON>
             <REASON value="Obsoleto">
               <FIELDS>
                 <FIELD refname="Microsoft.VSTS.Common.ResolvedReason">
                   <COPY from="value" value="Obsoleto" />
                   <ALLOWEDVALUES expanditems="true">
                     <LISTITEM value="Obsoleto" />
-                  </ALLOWEDVALUES>
-                </FIELD>
-              </FIELDS>
-            </REASON>
-            <REASON value="Copiado en el trabajo pendiente">
-              <FIELDS>
-                <FIELD refname="Microsoft.VSTS.Common.ResolvedReason">
-                  <COPY from="value" value="Copiado en el trabajo pendiente" />
-                  <ALLOWEDVALUES expanditems="true">
-                    <LISTITEM value="Copiado en el trabajo pendiente" />
                   </ALLOWEDVALUES>
                 </FIELD>
               </FIELDS>
@@ -386,6 +377,14 @@
             <FIELD refname="Microsoft.VSTS.Common.ResolvedDate">
               <SERVERDEFAULT from="clock" />
             </FIELD>
+            <FIELD refname="Microsoft.VSTS.Common.ClosedBy">
+              <ALLOWEXISTINGVALUE />
+              <COPY from="currentuser" />
+              <VALIDUSER />
+            </FIELD>
+            <FIELD refname="Microsoft.VSTS.Common.ClosedDate">
+              <SERVERDEFAULT from="clock" />
+            </FIELD>
             <FIELD refname="Microsoft.VSTS.Common.ResolvedBy">
               <COPY from="currentuser" />
               <VALIDUSER />
@@ -395,57 +394,10 @@
             </FIELD>
           </FIELDS>
         </TRANSITION>
-        <TRANSITION from="Resuelto" to="Activo">
-          <REASONS>
-            <REASON value="Prueba no superada" />
-            <DEFAULTREASON value="Sin corregir" />
-          </REASONS>
-          <FIELDS>
-            <FIELD refname="Microsoft.VSTS.Common.ActivatedBy">
-              <COPY from="currentuser" />
-              <VALIDUSER />
-            </FIELD>
-            <FIELD refname="Microsoft.VSTS.Common.ActivatedDate">
-              <SERVERDEFAULT from="clock" />
-            </FIELD>
-            <FIELD refname="System.AssignedTo">
-              <COPY from="field" field="Microsoft.VSTS.Common.ResolvedBy" />
-            </FIELD>
-          </FIELDS>
-        </TRANSITION>
-        <TRANSITION from="Resuelto" to="Cerrado">
-          <REASONS>
-            <DEFAULTREASON value="Comprobado" />
-          </REASONS>
-          <FIELDS>
-            <FIELD refname="Microsoft.VSTS.Common.ClosedDate">
-              <SERVERDEFAULT from="clock" />
-            </FIELD>
-            <FIELD refname="Microsoft.VSTS.Common.ClosedBy">
-              <COPY from="currentuser" />
-              <VALIDUSER />
-            </FIELD>
-          </FIELDS>
-        </TRANSITION>
-        <TRANSITION from="Propuesta" to="Cerrado">
-          <REASONS>
-            <REASON value="Aplazado" />
-            <REASON value="Duplicado" />
-            <DEFAULTREASON value="Rechazado" />
-          </REASONS>
-          <FIELDS>
-            <FIELD refname="Microsoft.VSTS.Common.ClosedDate">
-              <SERVERDEFAULT from="clock" />
-            </FIELD>
-            <FIELD refname="Microsoft.VSTS.Common.ClosedBy">
-              <COPY from="currentuser" />
-              <VALIDUSER />
-            </FIELD>
-          </FIELDS>
-        </TRANSITION>
         <TRANSITION from="Cerrado" to="Activo">
           <REASONS>
             <REASON value="Regresión" />
+            <REASON value="Sin corregir" />
             <DEFAULTREASON value="Cerrado por error" />
           </REASONS>
           <FIELDS>
@@ -461,6 +413,32 @@
             </FIELD>
           </FIELDS>
         </TRANSITION>
+        <!--for="[PROJECT]\Jefes De Proyecto" not="[PROJECT]\Desarrolladores"-->
+        <TRANSITION from="Pendiente" to="Cerrado" >
+          <REASONS>
+            <REASON value="Rechazado" />
+            <DEFAULTREASON value="No aplica" />
+          </REASONS>
+          <FIELDS>
+            <FIELD refname="Microsoft.VSTS.Common.ClosedDate">
+              <SERVERDEFAULT from="clock" />
+            </FIELD>
+            <FIELD refname="Microsoft.VSTS.Common.ClosedBy">
+              <COPY from="currentuser" />
+              <VALIDUSER />
+            </FIELD>
+          </FIELDS>
+        </TRANSITION>
+        <TRANSITION from="Cerrado" to="Pendiente">
+          <REASONS>
+            <DEFAULTREASON value="Re-introducido en el ámbito" />
+          </REASONS>
+          <FIELDS>
+            <FIELD refname="System.AssignedTo">
+              <COPY from="field" field="Microsoft.VSTS.Common.ClosedBy" />
+            </FIELD>
+          </FIELDS>
+        </TRANSITION>
       </TRANSITIONS>
     </WORKFLOW>
     <FORM>
@@ -471,7 +449,7 @@
           </Column>
         </Group>
         <Group Margin="(10,0,0,0)">
-          <Column PercentWidth="33">
+          <Column PercentWidth="25">
             <Group Label="Estado">
               <Column PercentWidth="100">
                 <Control Type="FieldControl" FieldName="System.AssignedTo" Label="Asi&amp;gnado a" LabelPosition="Left" />
@@ -481,23 +459,32 @@
               </Column>
             </Group>
           </Column>
-          <Column PercentWidth="33">
+          <Column PercentWidth="25">
             <Group Label="Planeación">
-              <Column PercentWidth="25">
-                <Control Type="FieldControl" FieldName="Microsoft.VSTS.Common.Priority" Label="Prioridad" LabelPosition="Left" />
+              <Column PercentWidth="30">
+                <!--<Control Type="FieldControl" FieldName="Microsoft.VSTS.Common.Priority" Label="Prioridad" LabelPosition="Left" />-->
                 <Control Type="FieldControl" FieldName="Microsoft.VSTS.Common.Severity" Label="Gravedad" LabelPosition="Left" />
-                <Control Type="FieldControl" FieldName="Microsoft.VSTS.Scheduling.Size" Label="Tamaño" LabelPosition="Left" />
-                <Control Type="FieldControl" FieldName="Microsoft.VSTS.Common.Triage" Label="Evaluación de errores" LabelPosition="Left" />
+                <!--<Control Type="FieldControl" FieldName="Microsoft.VSTS.Scheduling.Size" Label="Tamaño" LabelPosition="Left" />-->
+                <Control Type="FieldControl" FieldName="Microsoft.VSTS.Common.Triage" Label="Evaluación errores Testing" LabelPosition="Left" />
                 <Control Type="FieldControl" FieldName="Microsoft.VSTS.CMMI.Blocked" Label="Bloqueado" LabelPosition="Left" />
               </Column>
             </Group>
           </Column>
-          <Column PercentWidth="33">
+          <Column PercentWidth="30">
             <Group Label="Clasificación">
               <Column PercentWidth="100">
                 <Control Type="WorkItemClassificationControl" FieldName="System.AreaPath" Label="Á&amp;rea" LabelPosition="Left" />
                 <Control Type="WorkItemClassificationControl" FieldName="System.IterationPath" Label="I&amp;teración" LabelPosition="Left" />
                 <Control Type="FieldControl" FieldName="Microsoft.VSTS.CMMI.RootCause" Label="Causa principal" LabelPosition="Left" />
+              </Column>
+            </Group>
+          </Column>
+          <Column PercentWidth="20">
+            <Group Label="Esfuerzo (horas)">
+              <Column PercentWidth="30">
+                <Control Type="FieldControl" FieldName="Microsoft.VSTS.Scheduling.OriginalEstimate" Label="Estimación original" LabelPosition="Left" />
+                <Control Type="FieldControl" FieldName="Microsoft.VSTS.Scheduling.RemainingWork" Label="Trabajo restante" LabelPosition="Left" NumberFormat="DecimalNumbers" MaxLength="10" />
+                <Control Type="FieldControl" FieldName="Microsoft.VSTS.Scheduling.CompletedWork" Label="Trabajo completado" LabelPosition="Left" NumberFormat="DecimalNumbers" MaxLength="10" />
               </Column>
             </Group>
           </Column>
@@ -511,6 +498,7 @@
               <Tab Label="Síntoma">
                 <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.Symptom" Dock="Fill" LabelPosition="Top" />
               </Tab>
+              <!--
               <Tab Label="Información del sistema">
                 <Group>
                   <Column PercentWidth="100">
@@ -524,8 +512,31 @@
                 </Group>
                 <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.TCM.SystemInfo" Label="Información del sistema" LabelPosition="Top" Dock="Fill" />
               </Tab>
+              -->
               <Tab Label="Corregido">
                 <Control Type="HtmlFieldControl" FieldName="Microsoft.VSTS.CMMI.ProposedFix" Dock="Fill" LabelPosition="Top" />
+              </Tab>
+              <Tab Label="Cambios de alcance">
+                <Control Type="LinksControl" Name="Hierarchy" LabelPosition="Top">
+                  <LinksControlOptions>
+                    <WorkItemLinkFilters FilterType="include">
+                      <Filter LinkType="System.LinkTypes.Hierarchy" />
+                    </WorkItemLinkFilters>
+                    <WorkItemTypeFilters FilterType="include">
+                      <Filter WorkItemType="Requisito" />
+                      <Filter WorkItemType="Error" />
+                    </WorkItemTypeFilters>
+                    <LinkColumns>
+                      <LinkColumn RefName="System.ID" />
+                      <LinkColumn RefName="System.WorkItemType" />
+                      <LinkColumn RefName="System.Title" />
+                      <LinkColumn RefName="System.AssignedTo" />
+                      <LinkColumn RefName="System.State" />
+                      <LinkColumn LinkAttribute="System.Links.Comment" />
+                    </LinkColumns>
+                    <ExternalLinkFilters FilterType="excludeAll" />
+                  </LinksControlOptions>
+                </Control>
               </Tab>
               <Tab Label="Casos de prueba">
                 <Control Type="LinksControl" Name="TestedBy" LabelPosition="Top">
@@ -548,6 +559,7 @@
                   </LinksControlOptions>
                 </Control>
               </Tab>
+              <!--
               <Tab Label="Otros">
                 <Group>
                   <Column PercentWidth="50">
@@ -567,6 +579,7 @@
                   </Column>
                 </Group>
               </Tab>
+              -->
             </TabGroup>
           </Column>
           <Column PercentWidth="50">
